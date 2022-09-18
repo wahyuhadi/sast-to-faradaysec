@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	reponame_name = flag.String("r", "https://gitlab.com/unknown/unkown", "REPO name")
+	repo_name = flag.String("r", "https://gitlab.com/unknown/unkown", "REPO name")
 )
 
 func Parsing_Semgrep_Output(file_input, file_output string) {
@@ -42,7 +42,6 @@ func Parsing_Semgrep_Output(file_input, file_output string) {
 		if semgrep_data.Extra.Severity == "INFO" {
 			severity = "info"
 		}
-\
 
 		assets := fmt.Sprintf("%s:%v:%v", semgrep_data.Path, semgrep_data.Start.Line, semgrep_data.Start.Col)
 
@@ -50,13 +49,13 @@ func Parsing_Semgrep_Output(file_input, file_output string) {
 		output.TemplateID = semgrep_data.CheckID
 		output.Info.Name = desc
 		output.Info.Severity = severity
-		output.Host = *reponame_name
+		output.Host = assets
 		output.Template = "technologies/tech-detect.yaml"
 		output.Timestamp = time.Now()
-		output.Type = "http"
-		output.MatchedAt = *reponame_name
-		output.TemplateURL = "https://github.com/projectdiscovery/nuclei-templates/blob/master/technologies/tech-detect.yaml"
-		output.Info.Tags = []string{"tech"}
+		output.Type = "code"
+		output.MatchedAt = assets
+		output.TemplateURL = semgrep_data.Path
+		output.Info.Tags = []string{"tech", "code"}
 		output.MatcherStatus = true
 
 		file, _ := json.Marshal(output)
